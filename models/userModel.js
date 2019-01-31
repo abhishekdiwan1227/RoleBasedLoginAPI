@@ -1,5 +1,6 @@
 var mongoose = require("mongoose"); 
 var Schema = mongoose.Schema;
+var bcrypt = require("bcryptjs");
 
 var UserSchema = new Schema({
     _id: {
@@ -18,12 +19,16 @@ var UserSchema = new Schema({
     password: {
         type: String,
         required: true,
+    },
+    roleId: {
+        type: Number,
+        required: true,
     }
 });
 
 UserSchema.methods = {
-    authenticate: (plainTextPassword) => {
-        return bcrypt.compareSync(plainTextPassword, this.password);
+    authenticate: (plainTextPassword, storedPassword) => {
+        return plainTextPassword == storedPassword;
     }
 }
 

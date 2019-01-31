@@ -1,7 +1,7 @@
 var jwt = require("jsonwebtoken");
-//var expressjwt = require("expess-jwt");
+var userModel = require("../models/userModel");
+var mongoose = require("mongoose");
 var config = require("../config/keys");
-//var checkToken = expressjwt({secret: config.secrets.jwt});
 
 module.exports.verifyToken = (token) => {
     return jwt.verify(token ,config.secrets.jwt);
@@ -15,3 +15,15 @@ module.exports.signToken = (id, role) => {
         {expiresIn: config.secrets.expiration}
     );
 };
+
+module.exports.checkScope = (userId, userRoleId) => {
+    userModel.findById(userId)
+    .exec()
+    .then(result => {
+       if(result.roleId == userRoleId) return true;
+       return false;
+    })
+    .catch(err => {
+        console.log(err);
+    })
+}
